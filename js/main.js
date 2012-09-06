@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded',function(){
         ctx.save();
         ctx.translate(center.x, center.y);
         ctx.rotate((ratio * j));
-        ctx.translate(radius + 25,0);
+        ctx.translate(radius + 15,0);
         ctx.rotate(options.angle * (Math.PI / 180));
         ctx.strokeStyle = (j % 2) ? '#222222' : '#dddddd';
         ctx.strokeRect(-8,8, 16,16);
