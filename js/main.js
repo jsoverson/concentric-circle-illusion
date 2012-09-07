@@ -20,15 +20,23 @@ document.addEventListener('DOMContentLoaded',function(){
   window.addEventListener('resize', resize); resize();
 
   var options = {
+    centerRadius : 15,
     circles : 4,
     angle : 100,
-    distance : 56
+    distance : 56,
+    width : 16,
+    alternateRotation : true
   };
 
   var gui = new dat.GUI();
+  gui.add(options, 'centerRadius', 0,100).step(1);
   gui.add(options, 'circles', 1,10).step(1);
   gui.add(options, 'angle', 0, 360).step(1);
   gui.add(options, 'distance', 0, 200);
+  gui.add(options, 'alternateRotation');
+  var folder = gui.addFolder('Square');
+  folder.add(options, 'width', 0, 32).step(1);
+  folder.open();
 
   function render() {
     var center = {
@@ -36,15 +44,15 @@ document.addEventListener('DOMContentLoaded',function(){
       y : parseInt(canvas.height / 2, 10)
     };
     var sprite = {
-      width  : 16,
-      height : 16
+      width  : options.width,
+      height : options.width
     };
     var spriteWidth = Math.sqrt(sprite.width * sprite.width + sprite.height * sprite.height);
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.lineWidth = 2;
     for (var i = 0; i < options.circles; i++) {
       var radius = (i+1) * options.distance;
-      var circumference = 2 * Math.PI * radius;
+      var circumference = 2 * Math.PI * (radius + options.centerRadius);
       var numSprites = parseInt(circumference / spriteWidth,10);
       if (numSprites % 2) numSprites--; // keep even for color purposes
       var ratio = (Math.PI * 2) / numSprites;
@@ -52,10 +60,11 @@ document.addEventListener('DOMContentLoaded',function(){
         ctx.save();
         ctx.translate(center.x, center.y);
         ctx.rotate((ratio * j));
-        ctx.translate(radius + 15,0);
-        ctx.rotate(options.angle * (Math.PI / 180));
+        ctx.translate(radius + options.centerRadius,0);
+        var rotation = options.angle * (Math.PI / 180);
+        ctx.rotate(options.alternateRotation && i % 2 ? -rotation : rotation);
         ctx.strokeStyle = (j % 2) ? '#222222' : '#dddddd';
-        ctx.strokeRect(-8,8, 16,16);
+        ctx.strokeRect(-(sprite.width / 2),-(sprite.height / 2), sprite.width,sprite.height);
         ctx.stroke();
         ctx.restore();
       }
