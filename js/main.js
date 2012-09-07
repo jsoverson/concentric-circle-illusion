@@ -37,9 +37,10 @@ document.addEventListener('DOMContentLoaded',function(){
       hashKeyVals = window.location.hash.substr(1).split('&');
       for(i in hashKeyVals) {
         key = hashKeyVals[i].split('=')[0];
-        val = parseInt(hashKeyVals[i].split('=')[1], 10);
         if(key === 'alternateRotation') {
-          val = !!val;
+          val = (hashKeyVals[i].split('=')[1] === 'true');
+        } else {
+          val = parseInt(hashKeyVals[i].split('=')[1], 10);
         }
         if(typeof(options[key]) !== 'undefined') {
           options[key] = val;
