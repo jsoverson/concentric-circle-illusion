@@ -28,6 +28,27 @@ document.addEventListener('DOMContentLoaded',function(){
     alternateRotation : true
   };
 
+  function getUrlValues() {
+    var hashKeyVals = [],
+        i = 0,
+        key = null,
+        val = null;
+    if(window.location.hash) {
+      hashKeyVals = window.location.hash.substr(1).split('&');
+      for(i in hashKeyVals) {
+        key = hashKeyVals[i].split('=')[0];
+        val = parseInt(hashKeyVals[i].split('=')[1], 10);
+        if(key === 'alternateRotation') {
+          val = !!val;
+        }
+        if(typeof(options[key]) !== 'undefined') {
+          options[key] = val;
+        }
+      }
+    }
+  }
+  getUrlValues();
+
   var gui = new dat.GUI();
   gui.add(options, 'centerRadius', 0,100).step(1);
   gui.add(options, 'circles', 1,10).step(1);
@@ -37,6 +58,19 @@ document.addEventListener('DOMContentLoaded',function(){
   var folder = gui.addFolder('Square');
   folder.add(options, 'width', 0, 32).step(1);
   folder.open();
+
+  function updateUrl() {
+    var hashVals = [],
+        hashVal = '',
+        option = null;
+    for(option in options) {
+        hashVals.push(option + '=' + options[option]);
+    }
+    hashVal = hashVals.join('&');
+    if(window.location.hash !== '#' + hashVal) {
+        window.location.hash = hashVal;
+    }
+  }
 
   function render() {
     var center = {
@@ -70,6 +104,7 @@ document.addEventListener('DOMContentLoaded',function(){
       }
 
     }
+    updateUrl();
   }
 
   (function animloop(){
